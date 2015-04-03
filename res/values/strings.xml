@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">OpenTweetSearch</string>
+    <string name="hello">Hello from Android Java OpenTweetSearch editor! At first run goto: settings-authorise my app</string>
+    <string name="initq">Write your search query here</string>
+    <string name="username">Write a username here</string>
+    <string name="listname">Write a listname here</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_translate">Translate</string>
+    <string name="Translate">Translate</string>
+
+</resources>

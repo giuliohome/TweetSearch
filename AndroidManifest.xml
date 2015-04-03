@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.new_year"
+    android:installLocation="preferExternal"
+    android:versionCode="67"
+    android:versionName="1.67" >
+
+    <uses-sdk
+        android:maxSdkVersion="19"
+        android:minSdkVersion="10"
+        android:targetSdkVersion="17" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:launchMode="singleInstance" >
+        <meta-data android:name="com.google.android.gms.version"
+           android:value="@integer/google_play_services_version" />
+        <activity
+            android:name="org.new_year.new_yearActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="myDroid"
+                    android:scheme="app" />
+            </intent-filter>
+        </activity>
+        <activity android:name="org.new_year.TweetSearchActivity" />
+        <activity android:name="org.new_year.ListsMgrActivity" />
+        <activity android:name="org.new_year.twitterActivity" />
+        <activity android:name="org.new_year.DriveActivity" />
+        <activity android:name="org.new_year.confActivity" >
+        </activity>
+        <activity
+            android:name="org.new_year.TranslateActivity"
+            android:label="@string/title_activity_translate" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="org.new_year.TweetSearchActivity" />
+        </activity>
+    </application>
+
+</manifest>
