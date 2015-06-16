@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.new_year"
     android:installLocation="preferExternal"
-    android:versionCode="67"
-    android:versionName="1.67" >
+    android:versionCode="68"
+    android:versionName="1.68" >
 
     <uses-sdk
         android:maxSdkVersion="19"
