@@ -5,6 +5,7 @@ import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -412,7 +413,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				newtweets[id].setBackgroundColor(Color.CYAN);
 			}
-			
+			newtweets[id].setTextColor(Color.BLACK);
 			WrappingSlidingPaneLayout swipeL = new WrappingSlidingPaneLayout(this);
 			LinearLayout .LayoutParams SlayoutParams= new 
 					LinearLayout .LayoutParams ( LinearLayout.LayoutParams.MATCH_PARENT, 
@@ -474,6 +475,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("reply to " + item.screen_name);
 			detailL.addView(bt_link);
 			id_link++;
@@ -493,6 +495,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("tweets of " + item.screen_name);
 			detailL.addView(bt_link);
 			id_link++;
@@ -513,6 +516,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("Translate ");
 			detailL.addView(bt_link);
 			id_link++;
@@ -596,6 +600,8 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				newtweet.setBackgroundColor(Color.CYAN);
 			}
+			newtweet.setTextColor(Color.BLACK);
+			
 			String source_str = extract_source(item.source);
 			newtweet.setText(
 					item.username +"("+ item.screen_name +"): " 
@@ -670,6 +676,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("reply to " + item.screen_name);
 			detailL.addView(bt_link);
 			id_link++;
@@ -689,6 +696,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("tweets of " + item.screen_name);
 			detailL.addView(bt_link);
 			id_link++;
@@ -709,6 +717,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("Translate ");
 			detailL.addView(bt_link);
 			id_link++;
@@ -746,6 +755,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				newtweet.setBackgroundColor(Color.CYAN);
 			}
+			newtweet.setTextColor(Color.BLACK);
 			
 			String source_str = extract_source(item.source);
 			newtweet.setText(
@@ -815,6 +825,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("reply to " + item.screen_name);
 			detailL.addView(bt_link);
 			id_link++;
@@ -834,6 +845,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("tweets of " + item.screen_name);
 			detailL.addView(bt_link);
 			id_link++;
@@ -854,6 +866,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("Translate ");
 			detailL.addView(bt_link);
 			id_link++;
@@ -956,6 +969,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				newtweet.setBackgroundColor(Color.CYAN);
 			}
+			newtweet.setTextColor(Color.BLACK);
 			String source_str = extract_source(item.source);
 			newtweet.setText(
 					item.username +"("+ item.screen_name +"): " 
@@ -1025,6 +1039,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("reply to " + item.screen_name);
 			detailL.addView(bt_link);
 			id_link++;
@@ -1044,6 +1059,7 @@ public class TweetSearchActivity extends Activity {
 			} else {
 				bt_link.setBackgroundColor(Color.CYAN);
 			}
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("tweets of " + item.screen_name);
 			detailL.addView(bt_link);
 			id_link++;
@@ -1059,6 +1075,7 @@ public class TweetSearchActivity extends Activity {
 			});
 			bt_link = new Button(this);
 			bt_link.setId(id_link);
+			bt_link.setTextColor(Color.BLACK);
 			bt_link.setText("Translate ");
 			if (id % 2 == 0) {
 				bt_link.setBackgroundColor(Color.YELLOW);
