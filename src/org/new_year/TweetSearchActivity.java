@@ -414,7 +414,12 @@ public class TweetSearchActivity extends Activity {
 				newtweets[id].setBackgroundColor(Color.CYAN);
 			}
 			newtweets[id].setTextColor(Color.BLACK);
-			WrappingSlidingPaneLayout swipeL = new WrappingSlidingPaneLayout(this);
+			LinearLayout swpL = new LinearLayout(this);
+			swpL.setOrientation(LinearLayout.HORIZONTAL);
+			
+			final Button opSw = new Button(this);
+			opSw.setText("open swipe");
+			final WrappingSlidingPaneLayout swipeL = new WrappingSlidingPaneLayout(this);
 			LinearLayout .LayoutParams SlayoutParams= new 
 					LinearLayout .LayoutParams ( LinearLayout.LayoutParams.MATCH_PARENT, 
 							LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -424,12 +429,29 @@ public class TweetSearchActivity extends Activity {
 			swipeL.addView(detailL);
 			swipeL.addView(newtweets[id]);
 			
+			
+			OnClickListener openSW = new OnClickListener() {
+				public void onClick(View v) {
+					if (opSw.getText().toString().equals("open swipe")) {
+						swipeL.openPane();
+						opSw.setText("close swipe");
+						return;
+					}
+					if (opSw.getText().toString().equals("close swipe")) {
+						swipeL.closePane();
+						opSw.setText("open swipe");
+					}
+				}
+			}; 
+			opSw.setOnClickListener( openSW ); 
+			
 			if (checkIcon.isChecked()) {
 				ImageView newprofile = new ImageView(this);
 				newprofile.setId(id);
 				loadBitmap(newprofile,item.profile);
 				tw_res.addView(newprofile);
 			}
+			tw_res.addView(opSw);
 			tw_res.addView(swipeL);
 			for(final String url : item.urls)
 			{
@@ -609,7 +631,9 @@ public class TweetSearchActivity extends Activity {
 							" - "+item.date.replace("+0000", "") + " - " + 
 							source_str
 							+ "\n");
-			WrappingSlidingPaneLayout swipeL = new WrappingSlidingPaneLayout(this);
+			final Button opSw = new Button(this);
+			opSw.setText("open swipe");
+			final WrappingSlidingPaneLayout swipeL = new WrappingSlidingPaneLayout(this);
 			//LinearLayout mainL = new LinearLayout(this);
 			//mainL.setOrientation(LinearLayout.VERTICAL);
 			
@@ -630,7 +654,21 @@ public class TweetSearchActivity extends Activity {
 				loadBitmap(newprofile,item.profile);
 				tw_res.addView(newprofile);
 			}
+			tw_res.addView(opSw);
 			tw_res.addView( swipeL ) ; //newtweet);
+			opSw.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					if (opSw.getText().toString().equals("open swipe")) {
+						swipeL.openPane();
+						opSw.setText("close swipe");
+						return;
+					}
+					if (opSw.getText().toString().equals("close swipe")) {
+						swipeL.closePane();
+						opSw.setText("open swipe");
+					}
+				}
+			}); 
 			for(final String url : item.urls)
 			{
 				if (checkIcon.isChecked() && url.startsWith("media_url:"))
@@ -764,7 +802,9 @@ public class TweetSearchActivity extends Activity {
 							" - "+item.date.replace("+0000", "") + " - " + 
 							source_str
 							+ "\n");
-			WrappingSlidingPaneLayout swipeL = new WrappingSlidingPaneLayout(this);
+			final Button opSw = new Button(this);
+			opSw.setText("open swipe");
+			final WrappingSlidingPaneLayout swipeL = new WrappingSlidingPaneLayout(this);
 			LinearLayout .LayoutParams SlayoutParams= new 
 					LinearLayout .LayoutParams ( LinearLayout.LayoutParams.MATCH_PARENT, 
 							LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -780,7 +820,21 @@ public class TweetSearchActivity extends Activity {
 				loadBitmap(newprofile,item.profile);
 				tw_res.addView(newprofile);
 			}
+			tw_res.addView(opSw);
 			tw_res.addView(swipeL);
+			opSw.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					if (opSw.getText().toString().equals("open swipe")) {
+						swipeL.openPane();
+						opSw.setText("close swipe");
+						return;
+					}
+					if (opSw.getText().toString().equals("close swipe")) {
+						swipeL.closePane();
+						opSw.setText("open swipe");
+					}
+				}
+			}); 
 			for(final String url : item.urls)
 			{
 				if (checkIcon.isChecked() && url.startsWith("media_url:"))
@@ -977,7 +1031,9 @@ public class TweetSearchActivity extends Activity {
 							" - "+item.date.replace("+0000", "") + " - " + 
 							source_str
 							+ "\n");
-			WrappingSlidingPaneLayout swipeL = new WrappingSlidingPaneLayout(this);
+			final Button opSw = new Button(this);
+			opSw.setText("open swipe");
+			final WrappingSlidingPaneLayout swipeL = new WrappingSlidingPaneLayout(this);
 			LinearLayout .LayoutParams SlayoutParams= new 
 					LinearLayout .LayoutParams ( LinearLayout.LayoutParams.MATCH_PARENT, 
 							LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -993,7 +1049,21 @@ public class TweetSearchActivity extends Activity {
 				loadBitmap(newprofile,item.profile);
 				tw_res.addView(newprofile);
 			}
+			tw_res.addView(opSw); 
 			tw_res.addView(swipeL);
+			opSw.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					if (opSw.getText().toString().equals("open swipe")) {
+						swipeL.openPane();
+						opSw.setText("close swipe");
+						return;
+					}
+					if (opSw.getText().toString().equals("close swipe")) {
+						swipeL.closePane();
+						opSw.setText("open swipe");
+					}
+				}
+			}); 
 			for(final String url : item.urls)
 			{
 				if (checkIcon.isChecked() && url.startsWith("media_url:"))
