@@ -29,6 +29,8 @@ public class Translate_BackGround extends AsyncTask<String, Void, String> {
               uc.setDoInput(true);
            uc.setDoOutput(true);
                 Log.d("OpentTweet", "getInputStream()");
+                uc.setRequestProperty("User-Agent","Mozilla/5.0 ( compatible ) ");
+                uc.setRequestProperty("Accept","*/*");
             InputStream is= uc.getInputStream();
             
             
