@@ -49,7 +49,7 @@ public class Tweet implements Serializable {
 			for(int i=0; i< json_media.length();i++)
 			{
 				try {
-					String media_url = json_media.getJSONObject(i).getString("media_url"); 
+					String media_url = json_media.getJSONObject(i).getString("media_url").replace("http://", "https://"); 
 					urls.add("media_url:"+media_url);
 					this.message = this.message.replaceAll(json_media.getJSONObject(i).getString("url"), " ");
 				} catch (JSONException e) {
