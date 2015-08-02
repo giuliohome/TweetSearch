@@ -397,6 +397,14 @@ public class TweetSearchActivity extends Activity {
 
 		//Log.e("new_year_ko", "tweets retrieved"); 
 		if ( mytweets == null) {return;}; 
+		
+		SharedPreferences settingsPref = getSharedPreferences("opentweetsearch_prefs", MODE_PRIVATE);
+		SharedPreferences.Editor editor_tweets = settingsPref.edit();
+		String tweetSerial = objectToString(mytweets);
+		editor_tweets.putString("tweets",tweetSerial);
+		editor_tweets.commit();
+		
+		
 		EditText[] newtweets = new EditText[mytweets.size()];
 
 		for(final Tweet item : mytweets ){
@@ -614,6 +622,15 @@ public class TweetSearchActivity extends Activity {
 
 		//ArrayList<Tweet> 
 		mytweets = this.get2Tweets(searchTerm, command);//"giuliohome");
+		
+		if	(mytweets != null) {
+			SharedPreferences settingsPref = getSharedPreferences("opentweetsearch_prefs", MODE_PRIVATE);
+			SharedPreferences.Editor editor_tweets = settingsPref.edit();
+			String tweetSerial = objectToString(mytweets);
+			editor_tweets.putString("tweets",tweetSerial);
+			editor_tweets.commit();
+		}
+		
 		for(final Tweet item : mytweets ){
 			EditText newtweet = new EditText(this);
 			newtweet.setId(id);
@@ -785,6 +802,15 @@ public class TweetSearchActivity extends Activity {
 
 		//ArrayList<Tweet> 
 		mytweets = this.list2Tweets(searchTerm);//"giuliohome");
+		
+		if	(mytweets != null) {
+			SharedPreferences settingsPref = getSharedPreferences("opentweetsearch_prefs", MODE_PRIVATE);
+			SharedPreferences.Editor editor_tweets = settingsPref.edit();
+			String tweetSerial = objectToString(mytweets);
+			editor_tweets.putString("tweets",tweetSerial);
+			editor_tweets.commit();
+		}
+		
 		for(final Tweet item : mytweets ){
 			EditText newtweet = new EditText(this);
 			newtweet.setId(id);
