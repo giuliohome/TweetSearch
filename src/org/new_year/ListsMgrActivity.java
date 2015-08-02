@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -23,7 +27,7 @@ public class ListsMgrActivity extends Activity {
 	private Spinner comboList;
 	public static List<String> list_arr;
 	public static ArrayAdapter<String> dataAdapter;
-
+	private EditText eResp;
 
 	private EditText myName;
 	private EditText newList;
@@ -34,7 +38,7 @@ public class ListsMgrActivity extends Activity {
 		
 		ScrollView sc = new ScrollView(this);
 		Button bR = new Button(this);
-		bR.setText("refresh lists");
+		bR.setText("refresh");
 		bR.setOnClickListener(
 				new OnClickListener() {
 					public void onClick(View v) {
@@ -60,6 +64,28 @@ public class ListsMgrActivity extends Activity {
 		ll.setOrientation( LinearLayout.VERTICAL );
 		LinearLayout llb = new LinearLayout(this);
 		llb.addView(bR); 
+		Button bU = new Button(this);
+		bU.setText("members");
+		bU.setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						String list_name = comboList.getSelectedItem().toString(). replace(" ","").replace("#", "%23");
+						if (list_name.length() == 0 )
+							return;
+						if	(TweetSearchActivity.thisClass == null)
+							return;
+						String members = "";
+						ArrayList<String> res =	list2Members(list_name);
+						for (int i = 0; i < res.size(); i++) {
+							members += res.get(i) + "\n";
+						}
+						eResp.setText(members);
+					}
+				} 
+				
+				
+				); 
+		
 		comboList = new Spinner(this);
 		list_arr = new ArrayList<String>();
 		SharedPreferences settings = getSharedPreferences("opentweetsearch_prefs", MODE_PRIVATE);
@@ -72,6 +98,7 @@ public class ListsMgrActivity extends Activity {
 				android.R.layout.simple_spinner_item, list_arr);
 		comboList.setAdapter(dataAdapter);	
 		llb.addView(comboList); 
+		llb.addView(bU); 
 		myName = new EditText(this);
 		myName.setHint(R.string.username); 
 		ll.addView(llb); 
@@ -99,6 +126,10 @@ public class ListsMgrActivity extends Activity {
 		ll.addView(llb2); 
 		ll.addView(newList); 
 		ll.addView(llb3); 
+		eResp = new EditText(this);
+		eResp.setHint("response");
+		//eResp.setEnabled(false);
+		ll.addView(eResp);
 		sc.addView(ll);
 		setContentView(sc);
 		
@@ -210,6 +241,77 @@ public class ListsMgrActivity extends Activity {
 
 	}
 
+
+	protected ArrayList<String> list2Members(String list_name) {
+		ArrayList<String> myMembers = 
+				new ArrayList<String>();
+		String readTwitterFeed = ReadMembers(list_name);
+		try {
+			JSONObject members_resp = new JSONObject(readTwitterFeed);
+			JSONArray jsonArray = members_resp.getJSONArray("users");
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				if ( jsonObject != null ) { 
+					String curr_list = jsonObject.getString("name");
+					curr_list += " (" +jsonObject.getString("screen_name")+")";
+					myMembers.add(curr_list);
+				}
+			}
+		} catch (Exception e) {
+			Log.e("new_year_ko", "json array");
+			e.printStackTrace();
+		}
+		return myMembers;
+	}
+
+	private String ReadMembers(String list_name )
+	{
+		OAUTHReadMembers_BackGround myTask = new OAUTHReadMembers_BackGround();
+		SharedPreferences settings = getSharedPreferences("opentweetsearch_prefs", MODE_PRIVATE);
+		String userKey = settings.getString("user_key", "");
+		String userSecret = settings.getString("user_secret", "");
+		String my_owner = settings.getString("owner", "");
+		
+
+		if	(userKey.isEmpty() || userSecret.isEmpty())
+		{
+			Toast.makeText(getBaseContext(), "no authorization", Toast.LENGTH_LONG).show();
+			//return "";
+
+		}
+
+		String consumerKey = getString(R.string.consumerKey);
+		String consumerSecret = getString(R.string.consumerSecret);
+		
+		String getUrl;
+		
+		getUrl= "https:/"+"/api.twitter.com/1.1/lists/members.json?" +
+				"slug=" + list_name + "&owner_screen_name=" + my_owner;
+		
+
+		String[] params = new String[5];
+		params[0] = getUrl;
+		params[1] = consumerKey;
+		params[2] = consumerSecret;
+		params[3] = userKey;
+		params[4] = userSecret;
+		
+		myTask.execute(params);
+		try {
+			return myTask.get();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return "";
+		} catch (ExecutionException e1) {
+			//TODO Auto-generated catch block
+			e1.printStackTrace();
+			return "";
+		}
+
+	}
+	
+	
 	private void OAUTHadd2list(String list_name, String name_to_add, Boolean is_to_add )
 	{
 		OAUTHadd2list_BackGround myTask = new OAUTHadd2list_BackGround();
