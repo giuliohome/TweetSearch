@@ -11,20 +11,24 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
+
+import com.google.api.client.http.HttpResponse;
 
 import android.os.AsyncTask;
 
 public class OAUTHadd2list_BackGround extends
-AsyncTask<String, Void, Void> {
+AsyncTask<String, Void, String> {
 	
 	@Override
-	protected Void doInBackground(String... params) {
+	protected String doInBackground(String... params) {
 		// TODO Auto-generated method stub
 		
 		HttpPost post = new HttpPost(params[0]);
@@ -89,20 +93,29 @@ AsyncTask<String, Void, Void> {
 
 		DefaultHttpClient client = new DefaultHttpClient();	
 		//String response="";
+		ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+			@Override
+			public String handleResponse(org.apache.http.HttpResponse response)
+					throws ClientProtocolException, IOException {
+				// TODO Auto-generated method stub
+				return EntityUtils.toString(response.getEntity());
+			}
+		    };
 		
-		
-		
+		String server_reply="";
 		try {
-			client.execute(post, new BasicResponseHandler());
+			server_reply = client.execute(post, responseHandler); //new BasicResponseHandler());
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			server_reply+=" - "+e.getMessage();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			server_reply+=" - "+e.getMessage();
 		}
 		
-		return null;
+		return server_reply;
 		//return response;
 	}	
 

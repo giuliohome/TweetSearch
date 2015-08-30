@@ -137,7 +137,7 @@ public class ListsMgrActivity extends Activity {
 	
 	private OnClickListener handlerDelList = new OnClickListener() {
 		public void onClick(View v) {
-			String add_list_name = newList.getText().toString().trim().replace(" ","_").replace("@","");
+			String add_list_name = newList.getText().toString().trim().replace(" ","_").replace("@","").replace("_", "-");
 			if (add_list_name.length()>0  )
 			{
 				OAUTHnewlist(add_list_name, false) ;
@@ -211,7 +211,7 @@ public class ListsMgrActivity extends Activity {
 
 		String[] params;
 		if	(is_to_add) {
-			params = new String[6];
+			params = new String[6]; //slug also to destroy
 		} else {
 			params = new String[7];
 		}
@@ -227,18 +227,21 @@ public class ListsMgrActivity extends Activity {
 			params[6] = list_to_add;
 		}
 		myTask.execute(params);
+		String server_answer="";
 		try {
-			myTask.get();
+			server_answer = myTask.get();
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			server_answer+=" - "+e1.getMessage();
 			//return "";
 		} catch (ExecutionException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			server_answer+=" - "+e1.getMessage();
 			//return "";
 		}
-
+		eResp.setText("resp: "+server_answer);
 	}
 
 
