@@ -78,23 +78,56 @@ public class twitterActivity extends Activity {
 	    return value;
 	}
 	
+	String sharedText = null;
+	Uri imageUri = null;
+	
+	void handleSendText(Intent intent) {
+	    sharedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+	    //if (sharedText != null) {
+	        // Update UI to reflect text being shared
+	    //}
+	}
+
+	void handleSendImage(Intent intent) {
+	    imageUri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+	    //if (imageUri != null) {
+	    //    onActivityResult(RESULT_STORE_FILE,0,null);
+	    //}
+	}
 	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 
+	    // Get intent, action and MIME type
+	    Intent intent = getIntent();
+	    String action = intent.getAction();
+	    String type = intent.getType();
+
+	    if (Intent.ACTION_SEND.equals(action) && type != null) {
+	        if ("text/plain".equals(type)) {
+	            handleSendText(intent); // Handle text being sent
+	        } else if (type.startsWith("image/")) {
+	            handleSendImage(intent); // Handle single image being sent
+	        }
+	    } 
+		
 
 		LinearLayout ll = new LinearLayout(this); 
 		ll.setOrientation( LinearLayout.VERTICAL );
 		et = new EditText(this);
 		et.setHint("your tweet");
-		int maxLength = 140;
+		int maxLength = 140 + 100;
 		InputFilter[] FilterArray = new InputFilter[1];
 		FilterArray[0] = new InputFilter.LengthFilter(maxLength);
 		et.setFilters(FilterArray);
 		Bundle myBundle = this.getIntent().getExtras();
 		if (myBundle != null) {
 			et.setText("@"+(String)myBundle.get("replyTo")+" ");
+		}
+		if (sharedText != null) {
+			et.setText(sharedText);
+			sharedText = null;
 		}
 		replyId = new EditText(this);
 		replyId.setEnabled(false);
@@ -154,6 +187,11 @@ public class twitterActivity extends Activity {
 		ScrollView sc = new ScrollView(this);
 		sc.addView(ll);
 		setContentView(sc);
+		
+		if (imageUri != null) {
+	        onActivityResult(RESULT_STORE_FILE,0,null);
+	    }
+		
 	}
     
 	private OnClickListener handlerRMT = new OnClickListener() {
@@ -181,9 +219,14 @@ public class twitterActivity extends Activity {
         {
         
         case RESULT_STORE_FILE:
-        	if (data == null)
+        	if (data == null && imageUri == null )
         		return;
-            mFileUri = data.getData();
+        	if	(imageUri != null) {
+        		mFileUri = imageUri;
+        		imageUri = null;
+        	} else {
+        		mFileUri = data.getData();
+        	}
             if (mFileUri==null)
             	return;
             // Save the file to Google Drive
@@ -303,7 +346,7 @@ public class twitterActivity extends Activity {
                 galleryIntent.setType("*/*");
                 startActivityForResult(galleryIntent, RESULT_STORE_FILE);				
 			} catch (Exception e) { 
-				Log.w("OpenTweetSearch - Favorite failed: ", e.toString());
+				Log.w("OpenTweetSearch - Gallery intent failed: ", e.toString());
 				eResp.setText( e.getMessage());
 			}
 		}
