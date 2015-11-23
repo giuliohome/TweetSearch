@@ -369,6 +369,11 @@ public class DriveActivity extends Activity
     		{
 				try 
 				{
+					if	(mService == null)
+					{
+						showToast("Choose your account before!");
+						return;
+					}
 					if (TweetSearchActivity.mytweets == null)
 					{
 						showToast("No tweet to save!");
