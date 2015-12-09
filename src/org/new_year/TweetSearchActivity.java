@@ -1702,8 +1702,7 @@ public class TweetSearchActivity extends Activity {
 
 		return myLists;
 	} 
-
-
+	
 	
 	
 	private ArrayList<Tweet> list2Tweets(String searchTerm) {

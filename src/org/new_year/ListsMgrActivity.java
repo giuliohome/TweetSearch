@@ -112,6 +112,47 @@ public class ListsMgrActivity extends Activity {
 		bRem.setText("remove from list");
 		bRem.setOnClickListener(handlerRemList);
 		llb2.addView(bRem);
+		LinearLayout llb2F = new LinearLayout(this);
+		Button bFers = new Button(this);
+		bFers.setText("followers");
+		bFers.setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						String screen_name = myName.getText().toString().trim().replace(" ","").replace("@","");
+						if (screen_name.length() == 0 )
+							return;
+						if	(TweetSearchActivity.thisClass == null)
+							return;
+						String members = "";
+						ArrayList<String> res =	list2Followers(screen_name);
+						for (int i = 0; i < res.size(); i++) {
+							members += res.get(i) + "\n";
+						}
+						eResp.setText(members);
+					}
+				} 
+				);
+		llb2F.addView(bFers);
+		Button bFing = new Button(this);
+		bFing.setText("following");
+		bFing.setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						String screen_name = myName.getText().toString().trim().replace(" ","").replace("@","");
+						if (screen_name.length() == 0 )
+							return;
+						if	(TweetSearchActivity.thisClass == null)
+							return;
+						String members = "";
+						ArrayList<String> res =	list2Following(screen_name);
+						for (int i = 0; i < res.size(); i++) {
+							members += res.get(i) + "\n";
+						}
+						eResp.setText(members);
+					}
+				} 
+				);
+		llb2F.addView(bFing);
 		newList = new EditText(this);
 		newList.setHint(R.string.listname); 
 		LinearLayout llb3 = new LinearLayout(this);
@@ -124,6 +165,7 @@ public class ListsMgrActivity extends Activity {
 		bDelL.setOnClickListener(handlerDelList);
 		llb3.addView(bDelL);
 		ll.addView(llb2); 
+		ll.addView(llb2F); 
 		ll.addView(newList); 
 		ll.addView(llb3); 
 		eResp = new EditText(this);
@@ -246,9 +288,25 @@ public class ListsMgrActivity extends Activity {
 
 
 	protected ArrayList<String> list2Members(String list_name) {
+		String readTwitterFeed = ReadMembers(list_name);
+		return feed2Members(readTwitterFeed);
+	}
+	
+	protected ArrayList<String> list2Followers(String user_name) {
+		String readTwitterFeed = ReadFollowers(user_name);
+		return feed2Members(readTwitterFeed);
+	}
+	
+	protected ArrayList<String> list2Following(String user_name) {
+		String readTwitterFeed = ReadFollowing(user_name);
+		return feed2Members(readTwitterFeed);
+	}
+
+
+
+	protected ArrayList<String> feed2Members(String readTwitterFeed){
 		ArrayList<String> myMembers = 
 				new ArrayList<String>();
-		String readTwitterFeed = ReadMembers(list_name);
 		try {
 			JSONObject members_resp = new JSONObject(readTwitterFeed);
 			JSONArray jsonArray = members_resp.getJSONArray("users");
@@ -266,7 +324,7 @@ public class ListsMgrActivity extends Activity {
 		}
 		return myMembers;
 	}
-
+	
 	private String ReadMembers(String list_name )
 	{
 		OAUTHReadMembers_BackGround myTask = new OAUTHReadMembers_BackGround();
@@ -314,6 +372,97 @@ public class ListsMgrActivity extends Activity {
 
 	}
 	
+	private String ReadFollowers(String user_name )
+	{
+		OAUTHReadMembers_BackGround myTask = new OAUTHReadMembers_BackGround();
+		SharedPreferences settings = getSharedPreferences("opentweetsearch_prefs", MODE_PRIVATE);
+		String userKey = settings.getString("user_key", "");
+		String userSecret = settings.getString("user_secret", "");
+		
+
+		if	(userKey.isEmpty() || userSecret.isEmpty())
+		{
+			Toast.makeText(getBaseContext(), "no authorization", Toast.LENGTH_LONG).show();
+			//return "";
+
+		}
+
+		String consumerKey = getString(R.string.consumerKey);
+		String consumerSecret = getString(R.string.consumerSecret);
+		
+		String getUrl;
+		
+		getUrl= "https:/"+"/api.twitter.com/1.1/followers/list.json?" +
+				"owner_screen_name=" + user_name;
+		
+
+		String[] params = new String[5];
+		params[0] = getUrl;
+		params[1] = consumerKey;
+		params[2] = consumerSecret;
+		params[3] = userKey;
+		params[4] = userSecret;
+		
+		myTask.execute(params);
+		try {
+			return myTask.get();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return "";
+		} catch (ExecutionException e1) {
+			//TODO Auto-generated catch block
+			e1.printStackTrace();
+			return "";
+		}
+
+	}
+	
+	private String ReadFollowing(String user_name )
+	{
+		OAUTHReadMembers_BackGround myTask = new OAUTHReadMembers_BackGround();
+		SharedPreferences settings = getSharedPreferences("opentweetsearch_prefs", MODE_PRIVATE);
+		String userKey = settings.getString("user_key", "");
+		String userSecret = settings.getString("user_secret", "");
+		
+
+		if	(userKey.isEmpty() || userSecret.isEmpty())
+		{
+			Toast.makeText(getBaseContext(), "no authorization", Toast.LENGTH_LONG).show();
+			//return "";
+
+		}
+
+		String consumerKey = getString(R.string.consumerKey);
+		String consumerSecret = getString(R.string.consumerSecret);
+		
+		String getUrl;
+		
+		getUrl= "https:/"+"/api.twitter.com/1.1/friends/list.json?" +
+				"owner_screen_name=" + user_name;
+		
+
+		String[] params = new String[5];
+		params[0] = getUrl;
+		params[1] = consumerKey;
+		params[2] = consumerSecret;
+		params[3] = userKey;
+		params[4] = userSecret;
+		
+		myTask.execute(params);
+		try {
+			return myTask.get();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return "";
+		} catch (ExecutionException e1) {
+			//TODO Auto-generated catch block
+			e1.printStackTrace();
+			return "";
+		}
+
+	}
 	
 	private void OAUTHadd2list(String list_name, String name_to_add, Boolean is_to_add )
 	{
