@@ -393,7 +393,7 @@ public class ListsMgrActivity extends Activity {
 		String getUrl;
 		
 		getUrl= "https:/"+"/api.twitter.com/1.1/followers/list.json?" +
-				"owner_screen_name=" + user_name;
+				"screen_name=" + user_name;
 		
 
 		String[] params = new String[5];
@@ -439,7 +439,7 @@ public class ListsMgrActivity extends Activity {
 		String getUrl;
 		
 		getUrl= "https:/"+"/api.twitter.com/1.1/friends/list.json?" +
-				"owner_screen_name=" + user_name;
+				"screen_name=" + user_name;
 		
 
 		String[] params = new String[5];
