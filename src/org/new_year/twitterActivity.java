@@ -28,6 +28,7 @@ import oauth.signpost.http.HttpResponse;
 
 
 import android.app.Activity;
+import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -44,9 +46,13 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
@@ -54,6 +60,7 @@ import android.widget.Toast;
 public class twitterActivity extends Activity {
 	private EditText eResp;
 	private EditText et, replyId, replyText, twPhone, et_mediaId, showId;
+	private LinearLayout tw_res;
 	WebView webView;
 	public static String mediaId="";
 	public static String encodedImage=null;
@@ -133,12 +140,12 @@ public class twitterActivity extends Activity {
 		FilterArray[0] = new InputFilter.LengthFilter(maxLength);
 		et.setFilters(FilterArray);
 		Bundle myBundle = this.getIntent().getExtras();
-		if (myBundle != null) {
-			et.setText("@"+(String)myBundle.get("replyTo")+" ");
-		}
 		if (sharedText != null) {
 			et.setText(sharedText);
 			sharedText = null;
+		}
+		if (myBundle != null) {
+			et.setText("@"+(String)myBundle.get("replyTo")+" ");
 		}
 		replyId = new EditText(this);
 		replyId.setEnabled(false);
@@ -204,6 +211,9 @@ public class twitterActivity extends Activity {
 		bID.setOnClickListener(handlerShowID); 
 		llID.addView(bID);
 		ll.addView(llID);
+		tw_res = new LinearLayout(this);
+		tw_res.setOrientation(LinearLayout.VERTICAL);
+		ll.addView(tw_res);
 		showId = new EditText(this);
 		showId.setHint("tweet status id");
 		llID.addView(showId);
@@ -437,6 +447,141 @@ public class twitterActivity extends Activity {
 		}
 	} ;
 	
+	private void showTweet(String response) {
+		tw_res.removeAllViews();
+		final Tweet item;
+		try	{
+			JSONObject jsonObject = new JSONObject(response);
+			if ( jsonObject != null ) { 
+				//Log.i("new_year_ok", jsonObject.getString("text"));
+				Long replyId = null;
+				if	(!jsonObject.isNull("in_reply_to_status_id")) {
+					replyId = jsonObject.getLong("in_reply_to_status_id");
+				}
+				item = new Tweet( 
+						jsonObject.getJSONObject("user").getString("name"),
+						jsonObject.getJSONObject("user").getString("screen_name"),
+						jsonObject.getString("text"),
+						jsonObject.getString("created_at"),
+						jsonObject.getString("source"),
+						jsonObject.getJSONObject("user").getString("profile_image_url"),
+						jsonObject.getLong("id"), replyId,
+						jsonObject.getJSONObject("entities").getJSONArray("urls"),
+						jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media")
+						);
+			} else {
+				eResp.setText(response);
+				return;
+			}
+		} catch (Exception e) {
+			eResp.setText(e.getMessage());
+			return;
+		}
+		EditText newtweet = new EditText(this);
+		newtweet.setBackgroundColor(Color.CYAN);
+		newtweet.setTextColor(Color.BLACK);
+		String source_str = TweetSearchActivity.extract_source(item.source);
+		String ReplID="";
+		if (item.reply_id != null) {
+			ReplID=" > " + String.valueOf(item.reply_id);
+		}
+		newtweet.setText(
+				item.username +"("+ item.screen_name +")"+ String.valueOf(item.id) 
+						+ ReplID + ": " 
+						+ item.message+
+						" - "+item.date.replace("+0000", "") + " - " + 
+						source_str
+						+ "\n");
+		final Button opSw = new Button(this);
+		opSw.setText("open swipe");
+		final WrappingSlidingPaneLayout swipeL = new WrappingSlidingPaneLayout(this);
+		LinearLayout .LayoutParams SlayoutParams= new 
+				LinearLayout .LayoutParams ( LinearLayout.LayoutParams.MATCH_PARENT, 
+						LinearLayout.LayoutParams.WRAP_CONTENT);
+		swipeL.setLayoutParams(SlayoutParams);
+		
+		LinearLayout detailL = new LinearLayout(this);
+		detailL.setOrientation(LinearLayout.VERTICAL);
+		swipeL.addView(detailL);
+		swipeL.addView(newtweet);
+		ImageView newprofile = new ImageView(this);
+		TweetSearchActivity.loadBitmap(newprofile,item.profile);
+		tw_res.addView(newprofile);
+		tw_res.addView(opSw); 
+		tw_res.addView(swipeL);
+		opSw.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if (opSw.getText().toString().equals("open swipe")) {
+					swipeL.openPane();
+					opSw.setText("close swipe");
+					return;
+				}
+				if (opSw.getText().toString().equals("close swipe")) {
+					swipeL.closePane();
+					opSw.setText("open swipe");
+				}
+			}
+		}); 
+		for(final String url : item.urls)
+		{
+			if (url.startsWith("media_url:"))
+			{
+				WebView newphoto = new WebView(this);
+				WebSettings settings = newphoto.getSettings();
+				settings.setUseWideViewPort(true);
+				settings.setLoadWithOverviewMode(true);
+				tw_res.addView(newphoto);
+				newphoto.setWebViewClient(new WebViewClient());
+				newphoto.loadUrl(url.replaceFirst("media_url:", ""));
+			}
+			else {
+				Button bt_link = new Button(this);
+				bt_link.setText(url.replaceFirst("media_url:", ""));
+				tw_res.addView(bt_link);
+				bt_link.setOnClickListener(new OnClickListener() {
+					public void onClick(View v) {
+						Uri uri =  Uri.parse(((Button)v).getText().toString()); 
+						Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+						try {
+		                      // Start the activity
+		                      startActivity(intent);
+		                    } catch (ActivityNotFoundException e) {
+		                      // Raise on activity not found
+		                      Toast.makeText(getBaseContext(), "Browser not found.", Toast.LENGTH_SHORT).show();
+		                    }
+					}
+				});
+			}
+		}
+		Button bt_link = new Button(this);
+		bt_link.setBackgroundColor(Color.YELLOW);
+		bt_link.setTextColor(Color.BLACK);
+		bt_link.setText("reply to " + item.screen_name);
+		detailL.addView(bt_link);
+		bt_link.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent twitterActivityIntent = new Intent(getParent(), twitterActivity.class);
+				twitterActivityIntent.putExtra("replyStr", String.valueOf(item.id));
+				twitterActivityIntent.putExtra("replyTo", item.screen_name);
+				twitterActivityIntent.putExtra("replyTweet", item.message);
+				TabActivity parentActivity = (TabActivity)getParent();
+				parentActivity.startActivity(twitterActivityIntent);
+			}
+		});
+		bt_link = new Button(this);
+		bt_link.setBackgroundColor(Color.CYAN);
+		bt_link.setTextColor(Color.BLACK);
+		bt_link.setText("Translate ");
+		detailL.addView(bt_link);
+		bt_link.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				Intent translateActivityIntent = new Intent(getParent(), TranslateActivity.class);
+				translateActivityIntent.putExtra("originalTweet", item.message);
+				startActivity(translateActivityIntent);
+			}
+		});
+		
+	}
 	private OnClickListener handlerShowID = new OnClickListener() {
 		public void onClick(View v) {
 			eResp.setText("");
@@ -467,8 +612,7 @@ public class twitterActivity extends Activity {
 				myTask.execute(params);
 				try {
 
-					response = myTask.get();
-					 
+					 response = myTask.get();				
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -482,9 +626,9 @@ public class twitterActivity extends Activity {
 				}
 				
 				
-				
-				JSONObject array = new JSONObject(response);
-				eResp.setText(array.toString());
+				showTweet( response );
+				//JSONObject array = new JSONObject(response);
+				//eResp.setText(array.toString());
 				
 				
 			} catch (Exception e) { 

@@ -3,6 +3,7 @@ package org.new_year;
 import android.app.Activity;
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -13,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 //import android.widget.TextView;
 
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
@@ -82,6 +84,8 @@ import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;*/
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
+
+
 
 public class TweetSearchActivity extends Activity {
 
@@ -343,6 +347,7 @@ public class TweetSearchActivity extends Activity {
 		}
 	} ;  	*/
 
+
 	
 	private OnClickListener handlerHome = new OnClickListener() {
 		public void onClick(View v) {
@@ -411,7 +416,7 @@ public class TweetSearchActivity extends Activity {
 		for(final Tweet item : mytweets ){
 			newtweets[id] = new EditText(this);
 			newtweets[id].setId(id);
-			String source_str = extract_source2(item.source);
+			String source_str = extract_source(item.source);
 			String ReplID="";
 			if (item.reply_id != null) {
 				ReplID=" > " + String.valueOf(item.reply_id);
@@ -472,6 +477,9 @@ public class TweetSearchActivity extends Activity {
 				{
 					
 						WebView newphoto = new WebView(this);
+						WebSettings settings = newphoto.getSettings();
+						settings.setUseWideViewPort(true);
+						settings.setLoadWithOverviewMode(true);
 						newphoto.setId(id_link);
 						tw_res.addView(newphoto);
 						//loadBitmap(newphoto,url);
@@ -572,23 +580,10 @@ public class TweetSearchActivity extends Activity {
 		//    Log.e("new_year_info", "Done"); 
 	} 
 
-	private String extract_source(String source)
+	static String extract_source(String source)
 	{
 		int source1=source.indexOf(">")+1;
 		int source2= source.indexOf("</a");
-		String source_str;
-		if (source1>=0 && source2 >= source1)
-		{
-			source_str = source.substring(source1,source2);
-		} else {
-			source_str=source;
-		}
-		return source_str;
-	}
-	private String extract_source2(String source)
-	{
-		int source1=source.indexOf("&gt;")+4;
-		int source2= source.indexOf("&lt;/a");
 		String source_str;
 		if (source1>=0 && source2 >= source1)
 		{
@@ -703,6 +698,9 @@ public class TweetSearchActivity extends Activity {
 				{
 					
 						WebView newphoto = new WebView(this);
+						WebSettings settings = newphoto.getSettings();
+						settings.setUseWideViewPort(true);
+						settings.setLoadWithOverviewMode(true);
 						newphoto.setId(id_link);
 						tw_res.addView(newphoto);
 						//loadBitmap(newphoto,url);
@@ -884,6 +882,9 @@ public class TweetSearchActivity extends Activity {
 				{
 					
 						WebView newphoto = new WebView(this);
+						WebSettings settings = newphoto.getSettings();
+						settings.setUseWideViewPort(true);
+						settings.setLoadWithOverviewMode(true);
 						newphoto.setId(id_link);
 						tw_res.addView(newphoto);
 						//loadBitmap(newphoto,url);
@@ -1119,12 +1120,15 @@ public class TweetSearchActivity extends Activity {
 				{
 					
 						WebView newphoto = new WebView(this);
+						WebSettings settings = newphoto.getSettings();
+						settings.setUseWideViewPort(true);
+						settings.setLoadWithOverviewMode(true);
 						newphoto.setId(id_link);
 						tw_res.addView(newphoto);
 						//loadBitmap(newphoto,url);
 						newphoto.setWebViewClient(new WebViewClient());
 						newphoto.loadUrl(url.replaceFirst("media_url:", ""));
-						newphoto.getLayoutParams().height= LayoutParams.WRAP_CONTENT;
+						newphoto.setLayoutParams(SlayoutParams);;
 						id_link++;	
 				}
 				else {
@@ -1852,7 +1856,7 @@ public class TweetSearchActivity extends Activity {
 	
 	
 	
-	private static void loadBitmap(ImageView profile_photo,String photo_url_str) {
+	static void loadBitmap(ImageView profile_photo,String photo_url_str) {
 		URL newurl=null;
 		try {
 			newurl = new URL(photo_url_str);
