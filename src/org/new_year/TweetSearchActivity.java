@@ -367,18 +367,19 @@ public class TweetSearchActivity extends Activity {
 			    
 				return;
 			} 
-			String add_screen_name=myName.getText().toString().trim().replace(" ","").replace("@","");
-			if (add_screen_name.length()>0)
-			{
-			//hello.setText(""); 
-			list2Get(tw_res,comboList.getSelectedItem().toString(). replace(" ","").replace("#", "%23") +
-					"&owner_screen_name="+myName.getText().toString().replace(" ","").replace("@","")) ;
-			} else {
+			//String add_screen_name=myName.getText().toString().trim().replace(" ","").replace("@","");
+			//if (add_screen_name.length()>0)
+			//{
+			////hello.setText(""); 
+			//list2Get(tw_res,comboList.getSelectedItem().toString(). replace(" ","").replace("#", "%23") 
+			//		 + "&owner_screen_name="+myName.getText().toString().replace(" ","").replace("@","")
+			//		) ;
+			//} else {
 				SharedPreferences settings = getSharedPreferences("opentweetsearch_prefs", MODE_PRIVATE);
 				String my_owner = settings.getString("owner", "");
 				list2Get(tw_res,comboList.getSelectedItem().toString(). replace(" ","").replace("#", "%23") +
 						"&owner_screen_name="+my_owner.replace(" ","").replace("@","")) ;
-			}
+			//}
 		}
 	} ;  
 
@@ -411,8 +412,12 @@ public class TweetSearchActivity extends Activity {
 			newtweets[id] = new EditText(this);
 			newtweets[id].setId(id);
 			String source_str = extract_source2(item.source);
+			String ReplID="";
+			if (item.reply_id != null) {
+				ReplID=" > " + String.valueOf(item.reply_id);
+			}
 			newtweets[id].setText(
-					item.username+": " 
+					item.username+ String.valueOf(item.id) + ReplID + ": "
 							+	item.message+" - "+item.date.replace("+0000", "") + " - " + 
 							source_str
 							+ "\n");
@@ -514,6 +519,7 @@ public class TweetSearchActivity extends Activity {
 					Intent twitterActivityIntent = new Intent(getParent(), twitterActivity.class);
 					twitterActivityIntent.putExtra("replyStr", String.valueOf(item.id));
 					twitterActivityIntent.putExtra("replyTo", item.screen_name);
+					twitterActivityIntent.putExtra("replyTweet", item.message);
 					TabActivity parentActivity = (TabActivity)getParent();
 					parentActivity.startActivity(twitterActivityIntent);
 				}
@@ -642,8 +648,13 @@ public class TweetSearchActivity extends Activity {
 			newtweet.setTextColor(Color.BLACK);
 			
 			String source_str = extract_source(item.source);
+			String ReplID="";
+			if (item.reply_id != null) {
+				ReplID=" > " + String.valueOf(item.reply_id);
+			}
 			newtweet.setText(
-					item.username +"("+ item.screen_name +"): " 
+					item.username +"("+ item.screen_name +") "+ String.valueOf(item.id) 
+					+ ReplID + ": " 
 							+ item.message+
 							" - "+item.date.replace("+0000", "") + " - " + 
 							source_str
@@ -740,6 +751,7 @@ public class TweetSearchActivity extends Activity {
 					Intent twitterActivityIntent = new Intent(getParent(), twitterActivity.class);
 					twitterActivityIntent.putExtra("replyStr", String.valueOf(item.id));
 					twitterActivityIntent.putExtra("replyTo", item.screen_name);
+					twitterActivityIntent.putExtra("replyTweet", item.message);
 					TabActivity parentActivity = (TabActivity)getParent();
 					parentActivity.startActivity(twitterActivityIntent);
 				}
@@ -822,8 +834,13 @@ public class TweetSearchActivity extends Activity {
 			newtweet.setTextColor(Color.BLACK);
 			
 			String source_str = extract_source(item.source);
+			String ReplID="";
+			if (item.reply_id != null) {
+				ReplID=" > " + String.valueOf(item.reply_id);
+			}
 			newtweet.setText(
-					item.username +"("+ item.screen_name +"): " 
+					item.username +"("+ item.screen_name +")"+ String.valueOf(item.id) 
+							+ ReplID + ": " 
 							+ item.message+
 							" - "+item.date.replace("+0000", "") + " - " + 
 							source_str
@@ -914,6 +931,7 @@ public class TweetSearchActivity extends Activity {
 					Intent twitterActivityIntent = new Intent(getParent(), twitterActivity.class);
 					twitterActivityIntent.putExtra("replyStr", String.valueOf(item.id));
 					twitterActivityIntent.putExtra("replyTo", item.screen_name);
+					twitterActivityIntent.putExtra("replyTweet", item.message);
 					TabActivity parentActivity = (TabActivity)getParent();
 					parentActivity.startActivity(twitterActivityIntent);
 				}
@@ -1051,8 +1069,13 @@ public class TweetSearchActivity extends Activity {
 			}
 			newtweet.setTextColor(Color.BLACK);
 			String source_str = extract_source(item.source);
+			String ReplID="";
+			if (item.reply_id != null) {
+				ReplID=" > " + String.valueOf(item.reply_id);
+			}
 			newtweet.setText(
-					item.username +"("+ item.screen_name +"): " 
+					item.username +"("+ item.screen_name +")"+ String.valueOf(item.id) 
+							+ ReplID + ": " 
 							+ item.message+
 							" - "+item.date.replace("+0000", "") + " - " + 
 							source_str
@@ -1144,6 +1167,7 @@ public class TweetSearchActivity extends Activity {
 					Intent twitterActivityIntent = new Intent(getParent(), twitterActivity.class);
 					twitterActivityIntent.putExtra("replyStr", String.valueOf(item.id));
 					twitterActivityIntent.putExtra("replyTo", item.screen_name);
+					twitterActivityIntent.putExtra("replyTweet", item.message);
 					TabActivity parentActivity = (TabActivity)getParent();
 					parentActivity.startActivity(twitterActivityIntent);
 				}
@@ -1492,6 +1516,10 @@ public class TweetSearchActivity extends Activity {
 				if ( jsonObject != null ) { 
 					if ( jsonObject.getString("text") != null ) {
 						//Log.e("new_year_text ", jsonObject.getString("text") ); 
+						Long replyId = null;
+						if	(!jsonObject.isNull("in_reply_to_status_id")) {
+							replyId = jsonObject.getLong("in_reply_to_status_id");
+						}
 						tweet = new Tweet( 
 								jsonObject.getJSONObject("user").getString("name"),
 								jsonObject.getJSONObject("user").getString("screen_name"),
@@ -1499,7 +1527,7 @@ public class TweetSearchActivity extends Activity {
 								jsonObject.getString("created_at"),
 								jsonObject.getString("source"),
 								jsonObject.getJSONObject("user").getString("profile_image_url"),
-								jsonObject.getLong("id"),
+								jsonObject.getLong("id"), replyId,
 								jsonObject.getJSONObject("entities").getJSONArray("urls"),
 								jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media")
 								);
@@ -1583,8 +1611,11 @@ public class TweetSearchActivity extends Activity {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				if ( jsonObject != null ) { 
-					Log.i("new_year_ok", jsonObject.getString("text"));
-
+					//Log.i("new_year_ok", jsonObject.getString("text"));
+					Long replyId = null;
+					if	(!jsonObject.isNull("in_reply_to_status_id")) {
+						replyId = jsonObject.getLong("in_reply_to_status_id");
+					}
 					Tweet tweet = new Tweet( 
 							jsonObject.getJSONObject("user").getString("name"),
 							jsonObject.getJSONObject("user").getString("screen_name"),
@@ -1592,7 +1623,7 @@ public class TweetSearchActivity extends Activity {
 							jsonObject.getString("created_at"),
 							jsonObject.getString("source"),
 							jsonObject.getJSONObject("user").getString("profile_image_url"),
-							jsonObject.getLong("id"),
+							jsonObject.getLong("id"), replyId,
 							jsonObject.getJSONObject("entities").getJSONArray("urls"),
 							jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media")
 							);
@@ -1732,6 +1763,10 @@ public class TweetSearchActivity extends Activity {
 				if ( jsonObject != null ) { 
 					Log.i("new_year_ok", jsonObject.getString("text"));
 
+					Long replyId = null;
+					if	(!jsonObject.isNull("in_reply_to_status_id")) {
+						replyId = jsonObject.getLong("in_reply_to_status_id");
+					}
 					Tweet tweet = new Tweet( 
 							jsonObject.getJSONObject("user").getString("name"),
 							jsonObject.getJSONObject("user").getString("screen_name"),
@@ -1739,7 +1774,7 @@ public class TweetSearchActivity extends Activity {
 							jsonObject.getString("created_at"),
 							jsonObject.getString("source"),
 							jsonObject.getJSONObject("user").getString("profile_image_url"),
-							jsonObject.getLong("id"),
+							jsonObject.getLong("id"), replyId,
 							jsonObject.getJSONObject("entities").getJSONArray("urls"),
 							jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media")
 							);
@@ -1783,8 +1818,11 @@ public class TweetSearchActivity extends Activity {
 			for (int i = 0; i < jsonArray.length(); i++) {
 				JSONObject jsonObject = jsonArray.getJSONObject(i);
 				if ( jsonObject != null ) { 
-					Log.i("new_year_ok", jsonObject.getString("text"));
-
+					//Log.i("new_year_ok", jsonObject.getString("text"));
+					Long replyId = null;
+					if	(!jsonObject.isNull("in_reply_to_status_id")) {
+						replyId = jsonObject.getLong("in_reply_to_status_id");
+					}
 					Tweet tweet = new Tweet( 
 							jsonObject.getJSONObject("user").getString("name"),
 							jsonObject.getJSONObject("user").getString("screen_name"),
@@ -1792,7 +1830,7 @@ public class TweetSearchActivity extends Activity {
 							jsonObject.getString("created_at"),
 							jsonObject.getString("source"),
 							jsonObject.getJSONObject("user").getString("profile_image_url"),
-							jsonObject.getLong("id"),
+							jsonObject.getLong("id"), replyId,
 							jsonObject.getJSONObject("entities").getJSONArray("urls"),
 							jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media")
 							);

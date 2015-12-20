@@ -16,19 +16,23 @@ public class Tweet implements Serializable {
 	public String source;
 	public String profile;
 	public long id;
+	public Long reply_id;
 	public ArrayList<String>urls = new ArrayList<String>();
 
 	public Tweet(String username, String tw_screen_name, String message, String date, 
-			String tw_source, String tw_profile, long tw_id,
+			String tw_source, String tw_profile, long tw_id, Long tw_reply_id,
 			JSONArray json_urls, JSONArray json_media) {
 		this.username = username;
 		this.screen_name=tw_screen_name;
 		message=message.replace("&amp;", "&");
+		message=message.replace("&gt;", ">");
+		message=message.replace("&lt;", "<");
 		this.message = message;
 		this.date = date;
 		this.source = tw_source;
 		this.profile = tw_profile;
 		this.id = tw_id;
+		this.reply_id = tw_reply_id;
 		int base=0;
 		if	(json_urls != null)
 		{

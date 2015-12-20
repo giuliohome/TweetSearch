@@ -53,7 +53,7 @@ import android.widget.Toast;
 
 public class twitterActivity extends Activity {
 	private EditText eResp;
-	private EditText et, replyId, twPhone, et_mediaId;
+	private EditText et, replyId, replyText, twPhone, et_mediaId, showId;
 	WebView webView;
 	public static String mediaId="";
 	public static String encodedImage=null;
@@ -70,7 +70,7 @@ public class twitterActivity extends Activity {
 
 	    // these characters are not escaped by UrlEncode() but needed to be escaped
 	    value = value.replace("(", "%28").replace(")", "%29").replace("$", "%24").replace("!", "%21").replace(
-	        "*", "%2A").replace("'", "%27");
+	        "*", "%2A").replace("'", "%27").replace("\"", "%22");
 
 	    // these characters are escaped by UrlEncode() but will fail if unescaped!
 	    value = value.replace("%7E", "~");
@@ -95,9 +95,20 @@ public class twitterActivity extends Activity {
 	    //}
 	}
 	
+	@Override
+	public void onStop() {
+		super.onStop();  // Always call the superclass method first
+		SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putString("et_text", et.getText().toString());
+		editor.commit();
+	}
+	
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+		sharedText = sharedPreferences.getString("et_text", "");
 
 	    // Get intent, action and MIME type
 	    Intent intent = getIntent();
@@ -132,9 +143,13 @@ public class twitterActivity extends Activity {
 		replyId = new EditText(this);
 		replyId.setEnabled(false);
 		replyId.setHint("reply to id");
+		replyText = new EditText(this);
+		replyText.setEnabled(false);
+		replyText.setHint("reply to text");
 		myBundle = this.getIntent().getExtras();
 		if (myBundle != null) {
 			replyId.setText((String)myBundle.get("replyStr"));
+			replyText.setText((String)myBundle.get("replyTweet"));
 		}
 		Button bRT = new Button(this);
 		bRT.setText("retweet");
@@ -168,6 +183,7 @@ public class twitterActivity extends Activity {
 		
 		if (myBundle != null) {	
 				ll.addView(replyId);
+				ll.addView(replyText);
 				ll.addView(bRT);
 				ll.addView(bFT);
 			} else {
@@ -181,6 +197,16 @@ public class twitterActivity extends Activity {
 		ll.addView(bT);
 		//ll.addView(twPhone);
 		ll.addView(bCall);
+		LinearLayout llID = new LinearLayout(this);
+		llID.setOrientation(LinearLayout.HORIZONTAL);
+		Button bID = new Button(this);
+		bID.setText("Show id:");
+		bID.setOnClickListener(handlerShowID); 
+		llID.addView(bID);
+		ll.addView(llID);
+		showId = new EditText(this);
+		showId.setHint("tweet status id");
+		llID.addView(showId);
 		ll.addView(eResp);
 		//webView = new WebView(this);
 		//ll.addView(webView);
@@ -411,6 +437,62 @@ public class twitterActivity extends Activity {
 		}
 	} ;
 	
+	private OnClickListener handlerShowID = new OnClickListener() {
+		public void onClick(View v) {
+			eResp.setText("");
+			try {
+				SharedPreferences settings = getSharedPreferences("opentweetsearch_prefs", MODE_PRIVATE);
+				String userKey = settings.getString("user_key", "");
+				String userSecret = settings.getString("user_secret", "");
+
+				if	(userKey.isEmpty() || userSecret.isEmpty())
+				{
+					Toast.makeText(v.getContext(), "no authorization", Toast.LENGTH_LONG).show();
+					return;
+
+				}
+
+				String consumerKey = getString(R.string.consumerKey);
+				String consumerSecret = getString(R.string.consumerSecret);
+				String show_id = showId.getText().toString();
+				String searchUrl = "https://api.twitter.com/1.1/statuses/show.json?id="+show_id ;
+				OAUTHreadTwitterFeed_BackGround myTask = new OAUTHreadTwitterFeed_BackGround();
+				String[] params = new String[5];
+				params[1] = consumerKey;
+				params[2] = consumerSecret;
+				params[0] = searchUrl;
+				params[3] = userKey;
+				params[4] = userSecret;
+				String response;
+				myTask.execute(params);
+				try {
+
+					response = myTask.get();
+					 
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					Toast.makeText(getBaseContext(), e1.getMessage(), Toast.LENGTH_LONG).show();
+					return ;
+				} catch (ExecutionException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					Toast.makeText(getBaseContext(), e1.getMessage(), Toast.LENGTH_LONG).show();
+					return ;
+				}
+				
+				
+				
+				JSONObject array = new JSONObject(response);
+				eResp.setText(array.toString());
+				
+				
+			} catch (Exception e) { 
+				Log.w("OpenTweetSearch - Retweet failed: ", e.toString());
+				eResp.setText( e.getMessage());
+			}
+		}
+	} ;
 	
 	
 	private OnClickListener handlerRT = new OnClickListener() {
