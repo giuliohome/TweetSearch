@@ -475,18 +475,20 @@ public class TweetSearchActivity extends Activity {
 			{
 				if (checkIcon.isChecked() && url.startsWith("media_url:"))
 				{
-					
-						WebView newphoto = new WebView(this);
-						WebSettings settings = newphoto.getSettings();
-						settings.setUseWideViewPort(true);
-						settings.setLoadWithOverviewMode(true);
-						newphoto.setId(id_link);
-						tw_res.addView(newphoto);
-						//loadBitmap(newphoto,url);
-						newphoto.setWebViewClient(new WebViewClient());
-						newphoto.loadUrl(url.replaceFirst("media_url:", ""));
-						newphoto.getLayoutParams().height= LayoutParams.WRAP_CONTENT;
-						id_link++;	
+					ImageView newphoto = new ImageView(this);
+					newphoto.setId(id_link);
+					id_link++;	
+					tw_res.addView(newphoto);
+					Bitmap mIcon11 = null;
+			        try {
+			            InputStream in = new java.net.URL(url.replaceFirst("media_url:", "")).openStream();
+			            mIcon11 = BitmapFactory.decodeStream(in);
+			        } catch (Exception e) {
+			            Log.e("Error", e.getMessage());
+			            e.printStackTrace();
+			        }
+					newphoto.setImageBitmap(mIcon11);
+					newphoto.setAdjustViewBounds(true);
 				}
 				else {
 					
@@ -696,18 +698,20 @@ public class TweetSearchActivity extends Activity {
 			{
 				if (checkIcon.isChecked() && url.startsWith("media_url:"))
 				{
-					
-						WebView newphoto = new WebView(this);
-						WebSettings settings = newphoto.getSettings();
-						settings.setUseWideViewPort(true);
-						settings.setLoadWithOverviewMode(true);
-						newphoto.setId(id_link);
-						tw_res.addView(newphoto);
-						//loadBitmap(newphoto,url);
-						newphoto.setWebViewClient(new WebViewClient());
-						newphoto.loadUrl(url.replaceFirst("media_url:", ""));
-						newphoto.getLayoutParams().height= LayoutParams.WRAP_CONTENT;
-						id_link++;	
+					ImageView newphoto = new ImageView(this);
+					newphoto.setId(id_link);
+					id_link++;	
+					tw_res.addView(newphoto);
+					Bitmap mIcon11 = null;
+			        try {
+			            InputStream in = new java.net.URL(url.replaceFirst("media_url:", "")).openStream();
+			            mIcon11 = BitmapFactory.decodeStream(in);
+			        } catch (Exception e) {
+			            Log.e("Error", e.getMessage());
+			            e.printStackTrace();
+			        }
+					newphoto.setImageBitmap(mIcon11);
+					newphoto.setAdjustViewBounds(true);
 				}
 				else {
 					
@@ -880,18 +884,20 @@ public class TweetSearchActivity extends Activity {
 			{
 				if (checkIcon.isChecked() && url.startsWith("media_url:"))
 				{
-					
-						WebView newphoto = new WebView(this);
-						WebSettings settings = newphoto.getSettings();
-						settings.setUseWideViewPort(true);
-						settings.setLoadWithOverviewMode(true);
-						newphoto.setId(id_link);
-						tw_res.addView(newphoto);
-						//loadBitmap(newphoto,url);
-						newphoto.setWebViewClient(new WebViewClient());
-						newphoto.loadUrl(url.replaceFirst("media_url:", ""));
-						newphoto.getLayoutParams().height= LayoutParams.WRAP_CONTENT;
-						id_link++;	
+					ImageView newphoto = new ImageView(this);
+					newphoto.setId(id_link);
+					id_link++;	
+					tw_res.addView(newphoto);
+					Bitmap mIcon11 = null;
+			        try {
+			            InputStream in = new java.net.URL(url.replaceFirst("media_url:", "")).openStream();
+			            mIcon11 = BitmapFactory.decodeStream(in);
+			        } catch (Exception e) {
+			            Log.e("Error", e.getMessage());
+			            e.printStackTrace();
+			        }
+					newphoto.setImageBitmap(mIcon11);
+					newphoto.setAdjustViewBounds(true);
 				}
 				else {
 					
@@ -1118,18 +1124,20 @@ public class TweetSearchActivity extends Activity {
 			{
 				if (checkIcon.isChecked() && url.startsWith("media_url:"))
 				{
-					
-						WebView newphoto = new WebView(this);
-						WebSettings settings = newphoto.getSettings();
-						settings.setUseWideViewPort(true);
-						settings.setLoadWithOverviewMode(true);
-						newphoto.setId(id_link);
-						tw_res.addView(newphoto);
-						//loadBitmap(newphoto,url);
-						newphoto.setWebViewClient(new WebViewClient());
-						newphoto.loadUrl(url.replaceFirst("media_url:", ""));
-						newphoto.setLayoutParams(SlayoutParams);;
-						id_link++;	
+					ImageView newphoto = new ImageView(this);
+					newphoto.setId(id_link);
+					id_link++;	
+					tw_res.addView(newphoto);
+					Bitmap mIcon11 = null;
+			        try {
+			            InputStream in = new java.net.URL(url.replaceFirst("media_url:", "")).openStream();
+			            mIcon11 = BitmapFactory.decodeStream(in);
+			        } catch (Exception e) {
+			            Log.e("Error", e.getMessage());
+			            e.printStackTrace();
+			        }
+					newphoto.setImageBitmap(mIcon11);	
+					newphoto.setAdjustViewBounds(true);
 				}
 				else {
 					

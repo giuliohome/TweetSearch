@@ -2,6 +2,7 @@ package org.new_year;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 
@@ -526,13 +527,18 @@ public class twitterActivity extends Activity {
 		{
 			if (url.startsWith("media_url:"))
 			{
-				WebView newphoto = new WebView(this);
-				WebSettings settings = newphoto.getSettings();
-				settings.setUseWideViewPort(true);
-				settings.setLoadWithOverviewMode(true);
+				ImageView newphoto = new ImageView(this);
 				tw_res.addView(newphoto);
-				newphoto.setWebViewClient(new WebViewClient());
-				newphoto.loadUrl(url.replaceFirst("media_url:", ""));
+				Bitmap mIcon11 = null;
+		        try {
+		            InputStream in = new java.net.URL(url.replaceFirst("media_url:", "")).openStream();
+		            mIcon11 = BitmapFactory.decodeStream(in);
+		        } catch (Exception e) {
+		            Log.e("Error", e.getMessage());
+		            e.printStackTrace();
+		        }
+				newphoto.setImageBitmap(mIcon11);
+				newphoto.setAdjustViewBounds(true);
 			}
 			else {
 				Button bt_link = new Button(this);
