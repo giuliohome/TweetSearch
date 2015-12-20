@@ -479,16 +479,8 @@ public class TweetSearchActivity extends Activity {
 					newphoto.setId(id_link);
 					id_link++;	
 					tw_res.addView(newphoto);
-					Bitmap mIcon11 = null;
-			        try {
-			            InputStream in = new java.net.URL(url.replaceFirst("media_url:", "")).openStream();
-			            mIcon11 = BitmapFactory.decodeStream(in);
-			        } catch (Exception e) {
-			            Log.e("Error", e.getMessage());
-			            e.printStackTrace();
-			        }
-					newphoto.setImageBitmap(mIcon11);
-					newphoto.setAdjustViewBounds(true);
+					OpenStreamBG openStr = new OpenStreamBG();
+		            openStr.execute(new Object[] { url.replaceFirst("media_url:", ""), newphoto });
 				}
 				else {
 					
@@ -702,16 +694,8 @@ public class TweetSearchActivity extends Activity {
 					newphoto.setId(id_link);
 					id_link++;	
 					tw_res.addView(newphoto);
-					Bitmap mIcon11 = null;
-			        try {
-			            InputStream in = new java.net.URL(url.replaceFirst("media_url:", "")).openStream();
-			            mIcon11 = BitmapFactory.decodeStream(in);
-			        } catch (Exception e) {
-			            Log.e("Error", e.getMessage());
-			            e.printStackTrace();
-			        }
-					newphoto.setImageBitmap(mIcon11);
-					newphoto.setAdjustViewBounds(true);
+					OpenStreamBG openStr = new OpenStreamBG();
+		            openStr.execute(new Object[] { url.replaceFirst("media_url:", ""), newphoto });
 				}
 				else {
 					
@@ -888,16 +872,8 @@ public class TweetSearchActivity extends Activity {
 					newphoto.setId(id_link);
 					id_link++;	
 					tw_res.addView(newphoto);
-					Bitmap mIcon11 = null;
-			        try {
-			            InputStream in = new java.net.URL(url.replaceFirst("media_url:", "")).openStream();
-			            mIcon11 = BitmapFactory.decodeStream(in);
-			        } catch (Exception e) {
-			            Log.e("Error", e.getMessage());
-			            e.printStackTrace();
-			        }
-					newphoto.setImageBitmap(mIcon11);
-					newphoto.setAdjustViewBounds(true);
+					OpenStreamBG openStr = new OpenStreamBG();
+		            openStr.execute(new Object[] { url.replaceFirst("media_url:", ""), newphoto });
 				}
 				else {
 					
@@ -1128,16 +1104,8 @@ public class TweetSearchActivity extends Activity {
 					newphoto.setId(id_link);
 					id_link++;	
 					tw_res.addView(newphoto);
-					Bitmap mIcon11 = null;
-			        try {
-			            InputStream in = new java.net.URL(url.replaceFirst("media_url:", "")).openStream();
-			            mIcon11 = BitmapFactory.decodeStream(in);
-			        } catch (Exception e) {
-			            Log.e("Error", e.getMessage());
-			            e.printStackTrace();
-			        }
-					newphoto.setImageBitmap(mIcon11);	
-					newphoto.setAdjustViewBounds(true);
+					OpenStreamBG openStr = new OpenStreamBG();
+		            openStr.execute(new Object[] { url.replaceFirst("media_url:", ""), newphoto });
 				}
 				else {
 					
