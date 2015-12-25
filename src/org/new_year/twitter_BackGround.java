@@ -43,7 +43,7 @@ public class twitter_BackGround extends AsyncTask<String, Void, String> {
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				return e.getMessage();
+				return "{\"error\":\""+e.getMessage()+"\"}";
 			}
 		}
 		if (params.length == 6)
@@ -57,7 +57,7 @@ public class twitter_BackGround extends AsyncTask<String, Void, String> {
 			}
 			if (params[5].equals("media=?")) {
 				if (twitterActivity.encodedImage == null)
-					return "no encoded image";
+					return "{\"error\":\"no encoded image\"}";
 				nameValuePairs.add(new BasicNameValuePair("media", twitterActivity.encodedImage ));
 			}
 			if (twitterActivity.mediaId != null && twitterActivity.mediaId.length()>0) {
@@ -70,7 +70,7 @@ public class twitter_BackGround extends AsyncTask<String, Void, String> {
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				return e.getMessage();
+				return "{\"error\":\""+e.getMessage()+"\"}";
 			}
 		}
 		if (params.length == 5)
@@ -85,18 +85,18 @@ public class twitter_BackGround extends AsyncTask<String, Void, String> {
 		} catch (OAuthMessageSignerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return e.getMessage();
+			return "{\"error\":\""+e.getMessage()+"\"}";
 		} catch (OAuthExpectationFailedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return e.getMessage();
+			return "{\"error\":\""+e.getMessage()+"\"}";
 		} catch (OAuthCommunicationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return e.getMessage();
+			return "{\"error\":\""+e.getMessage()+"\"}";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return e.getMessage();
+			return "{\"error\":\""+e.getMessage()+"\"}";
 		}
 
 		DefaultHttpClient client = new DefaultHttpClient();
@@ -109,11 +109,11 @@ public class twitter_BackGround extends AsyncTask<String, Void, String> {
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return e.getMessage();
+			return "{\"error\":\""+e.getMessage()+"\"}";
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return e.getMessage();
+			return "{\"error\":\""+e.getMessage()+"\"}";
 		}
 		twitterActivity.mediaId="";
 		return response;

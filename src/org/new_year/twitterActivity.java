@@ -78,7 +78,7 @@ public class twitterActivity extends Activity {
 
 	    // these characters are not escaped by UrlEncode() but needed to be escaped
 	    value = value.replace("(", "%28").replace(")", "%29").replace("$", "%24").replace("!", "%21").replace(
-	        "*", "%2A").replace("'", "%27").replace("\"", "%22");
+	        "*", "%2A").replace("'", "%27").replace("\"", "%22").replace("*", "%2A");
 
 	    // these characters are escaped by UrlEncode() but will fail if unescaped!
 	    value = value.replace("%7E", "~");
@@ -143,10 +143,16 @@ public class twitterActivity extends Activity {
 		Bundle myBundle = this.getIntent().getExtras();
 		if (sharedText != null) {
 			et.setText(sharedText);
-			sharedText = null;
 		}
 		if (myBundle != null) {
-			et.setText("@"+(String)myBundle.get("replyTo")+" ");
+			String replyTo = "@"+(String)myBundle.get("replyTo"); 
+			if (sharedText == null || !sharedText.startsWith(replyTo)) {
+				et.setText(replyTo+" ");
+				sharedText = replyTo;
+				SharedPreferences.Editor editor = sharedPreferences.edit();
+				editor.putString("et_text", sharedText);
+				editor.commit();
+			}
 		}
 		replyId = new EditText(this);
 		replyId.setEnabled(false);
@@ -726,7 +732,7 @@ public class twitterActivity extends Activity {
 				
 				twitter_BackGround myTask = new twitter_BackGround();
 				String reply_id = replyId.getText().toString();
-				byte[] utf8Bytes = (et.getText().toString()).getBytes("UTF-8");
+				byte[] utf8Bytes = (et.getText().toString().replace("*", "\u2731")).getBytes("UTF-8");
 				String status_par = new String(utf8Bytes, "UTF-8");
 				//String status_par = et.getText().toString();//.replace(" ", "%20").replace("/", "%2F").replace("#", "%23").replace("=", "%3D").replace("\"", "%22");
 				//status_par = UrlEncodeForOAuth(status_par);
