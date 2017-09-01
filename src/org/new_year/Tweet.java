@@ -18,10 +18,12 @@ public class Tweet implements Serializable {
 	public long id;
 	public Long reply_id;
 	public ArrayList<String>urls = new ArrayList<String>();
+	public int favourites_count;
+	public int retweet_count;
 
 	public Tweet(String username, String tw_screen_name, String message, String date, 
 			String tw_source, String tw_profile, long tw_id, Long tw_reply_id,
-			JSONArray json_urls, JSONArray json_media) {
+			JSONArray json_urls, JSONArray json_media, int tw_favourites_count, int tw_retweet_count) {
 		this.username = username;
 		this.screen_name=tw_screen_name;
 		message=message.replace("&amp;", "&");
@@ -33,6 +35,8 @@ public class Tweet implements Serializable {
 		this.profile = tw_profile;
 		this.id = tw_id;
 		this.reply_id = tw_reply_id;
+		this.favourites_count = tw_favourites_count;
+		this.retweet_count = tw_retweet_count;
 		int base=0;
 		if	(json_urls != null)
 		{

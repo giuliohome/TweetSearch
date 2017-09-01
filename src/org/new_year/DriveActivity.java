@@ -122,7 +122,12 @@ public class DriveActivity extends Activity
     		@Override
     		public void run() 
     		{
-                mResultList = new ArrayList<File>();
+    			if	(mService == null)
+				{
+					showToast("Choose your account before!");
+					return;
+				}
+    			mResultList = new ArrayList<File>();
 				com.google.api.services.drive.Drive.Files f1 = mService.files();
 				com.google.api.services.drive.Drive.Files.List request = null;
 				

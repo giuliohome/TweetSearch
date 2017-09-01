@@ -92,6 +92,7 @@ public class TweetSearchActivity extends Activity {
 
 	private EditText eT ;
 	private EditText myName;//, myList;
+	private EditText maxID;
 	private Spinner comboList;
 	public static List<String> list_arr;
 	public static ArrayAdapter<String> dataAdapter;
@@ -187,6 +188,9 @@ public class TweetSearchActivity extends Activity {
 		llicon.addView(iconView);
 		//llicon.addView(bGetLists);
 		//llicon.addView(bGetMyLists);
+		maxID = new EditText(this);
+		maxID.setHint("before ID"); 
+		llicon.addView(maxID);
 		ll.addView(llicon);
 
 		llb.addView(bR);
@@ -424,6 +428,7 @@ public class TweetSearchActivity extends Activity {
 			newtweets[id].setText(
 					item.username+ String.valueOf(item.id) + ReplID + ": "
 							+	item.message+" - "+item.date.replace("+0000", "") + " - " + 
+							"fav: " + Integer.toString(item.favourites_count) + " rwt: " + Integer.toString(item.retweet_count) +  " - " +
 							source_str
 							+ "\n");
 			if (id % 2 == 0) {
@@ -646,6 +651,7 @@ public class TweetSearchActivity extends Activity {
 					+ ReplID + ": " 
 							+ item.message+
 							" - "+item.date.replace("+0000", "") + " - " + 
+							"fav: " + Integer.toString(item.favourites_count) + " rwt: " + Integer.toString(item.retweet_count) +  " - " +
 							source_str
 							+ "\n");
 			final Button opSw = new Button(this);
@@ -829,6 +835,7 @@ public class TweetSearchActivity extends Activity {
 							+ ReplID + ": " 
 							+ item.message+
 							" - "+item.date.replace("+0000", "") + " - " + 
+							"fav: " + Integer.toString(item.favourites_count) + " rwt: " + Integer.toString(item.retweet_count) +  " - " +
 							source_str
 							+ "\n");
 			final Button opSw = new Button(this);
@@ -1061,6 +1068,7 @@ public class TweetSearchActivity extends Activity {
 							+ ReplID + ": " 
 							+ item.message+
 							" - "+item.date.replace("+0000", "") + " - " + 
+							"fav: " + Integer.toString(item.favourites_count) + " rwt: " + Integer.toString(item.retweet_count) +  " - " +
 							source_str
 							+ "\n");
 			final Button opSw = new Button(this);
@@ -1394,8 +1402,13 @@ public class TweetSearchActivity extends Activity {
 
 		String searchUrl =
 
-				"https:/"+"/api.twitter.com/1.1/search/tweets.json?q="+searchTerm+"&count=30&result_type="+method; 
+				"https:/"+"/api.twitter.com/1.1/search/tweets.json?q="+searchTerm+"&count=30&tweet_mode=extended&result_type="+method; 
 
+		String maxIDstr = maxID.getText().toString();
+		if	(maxIDstr != null && maxIDstr.length()>0) {
+			searchUrl += "&max_id=" +  maxIDstr;
+		}
+		
 		ArrayList<Tweet> tweets =
 				new ArrayList<Tweet>();
 
@@ -1503,13 +1516,14 @@ public class TweetSearchActivity extends Activity {
 						tweet = new Tweet( 
 								jsonObject.getJSONObject("user").getString("name"),
 								jsonObject.getJSONObject("user").getString("screen_name"),
-								jsonObject.getString("text"),
+								jsonObject.getString("full_text"),
 								jsonObject.getString("created_at"),
 								jsonObject.getString("source"),
 								jsonObject.getJSONObject("user").getString("profile_image_url"),
 								jsonObject.getLong("id"), replyId,
 								jsonObject.getJSONObject("entities").getJSONArray("urls"),
-								jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media")
+								jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media"),
+								jsonObject.getInt("favorite_count"), jsonObject.getInt("retweet_count")
 								);
 						/*tweet = new Tweet(
 								jsonObject.getString( "from_user"),
@@ -1556,15 +1570,15 @@ public class TweetSearchActivity extends Activity {
 	
 		switch (command) {
 		case TWEET: 
-			searchUrl= "https:/"+"/api.twitter.com/1.1/statuses/user_timeline.json?screen_name="+searchTerm;
+			searchUrl= "https:/"+"/api.twitter.com/1.1/statuses/user_timeline.json?tweet_mode=extended&screen_name="+searchTerm;
 			break;
 		case FAVORITES:
-			searchUrl= "https:/"+"/api.twitter.com/1.1/favorites/list.json";
+			searchUrl= "https:/"+"/api.twitter.com/1.1/favorites/list.json?tweet_mode=extended";
 			if (!searchTerm.equals(""))
-				searchUrl+="?screen_name="+searchTerm;
+				searchUrl+="&screen_name="+searchTerm;
 			break;
 		case MENTION:
-			searchUrl= "https:/"+"/api.twitter.com/1.1/statuses/mentions_timeline.json";
+			searchUrl= "https:/"+"/api.twitter.com/1.1/statuses/mentions_timeline.json?tweet_mode=extended";
 			break;
 		case FOLLOW:
 			OAUTHfollow(searchTerm, true);
@@ -1574,6 +1588,10 @@ public class TweetSearchActivity extends Activity {
 			return tweets;
 		}
 		
+		String maxIDstr = maxID.getText().toString();
+		if	(maxIDstr != null && maxIDstr.length()>0) {
+			searchUrl += "&max_id=" +  maxIDstr;
+		}
 		
 		//HttpClient client = new  DefaultHttpClient();
 		//HttpGet get = new HttpGet(searchUrl);
@@ -1605,7 +1623,8 @@ public class TweetSearchActivity extends Activity {
 							jsonObject.getJSONObject("user").getString("profile_image_url"),
 							jsonObject.getLong("id"), replyId,
 							jsonObject.getJSONObject("entities").getJSONArray("urls"),
-							jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media")
+							jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media"),
+							jsonObject.getInt("favorite_count"), jsonObject.getInt("retweet_count")
 							);
 					tweets.add(tweet);
 				}
@@ -1720,7 +1739,12 @@ public class TweetSearchActivity extends Activity {
 
 		//String searchUrl ="http:/"+"/search.twitter.com/search.json?q="+searchTerm+"&rpp=5&include_entities=true&result_type=mixed"; 
 
-		String searchUrl = "https:/"+"/api.twitter.com/1.1/lists/statuses.json?slug="+searchTerm;
+		String searchUrl = "https:/"+"/api.twitter.com/1.1/lists/statuses.json?tweet_mode=extended&slug="+searchTerm;
+		
+		String maxIDstr = maxID.getText().toString();
+		if	(maxIDstr != null && maxIDstr.length()>0) {
+			searchUrl += "&max_id=" +  maxIDstr;
+		}
 
 		ArrayList<Tweet> tweets = 
 				new ArrayList<Tweet>();
@@ -1750,13 +1774,14 @@ public class TweetSearchActivity extends Activity {
 					Tweet tweet = new Tweet( 
 							jsonObject.getJSONObject("user").getString("name"),
 							jsonObject.getJSONObject("user").getString("screen_name"),
-							jsonObject.getString("text"),
+							jsonObject.getString("full_text"),
 							jsonObject.getString("created_at"),
 							jsonObject.getString("source"),
 							jsonObject.getJSONObject("user").getString("profile_image_url"),
 							jsonObject.getLong("id"), replyId,
 							jsonObject.getJSONObject("entities").getJSONArray("urls"),
-							jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media")
+							jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media"),
+							jsonObject.getInt("favorite_count"), jsonObject.getInt("retweet_count")
 							);
 					tweets.add(tweet);
 				}
@@ -1777,8 +1802,13 @@ public class TweetSearchActivity extends Activity {
 
 		//String searchUrl ="http:/"+"/search.twitter.com/search.json?q="+searchTerm+"&rpp=5&include_entities=true&result_type=mixed"; 
 
-		String searchUrl = "https:/"+"/api.twitter.com/1.1/statuses/home_timeline.json";
+		String searchUrl = "https:/"+"/api.twitter.com/1.1/statuses/home_timeline.json?tweet_mode=extended";
 
+		String maxIDstr = maxID.getText().toString();
+		if	(maxIDstr != null && maxIDstr.length()>0) {
+			searchUrl += "&max_id=" +  maxIDstr;
+		}
+		
 		ArrayList<Tweet> tweets = 
 				new ArrayList<Tweet>();
 
@@ -1806,13 +1836,14 @@ public class TweetSearchActivity extends Activity {
 					Tweet tweet = new Tweet( 
 							jsonObject.getJSONObject("user").getString("name"),
 							jsonObject.getJSONObject("user").getString("screen_name"),
-							jsonObject.getString("text"),
+							jsonObject.getString("full_text"),
 							jsonObject.getString("created_at"),
 							jsonObject.getString("source"),
 							jsonObject.getJSONObject("user").getString("profile_image_url"),
 							jsonObject.getLong("id"), replyId,
 							jsonObject.getJSONObject("entities").getJSONArray("urls"),
-							jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media")
+							jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media"),
+							jsonObject.getInt("favorite_count"), jsonObject.getInt("retweet_count")
 							);
 					tweets.add(tweet);
 				}

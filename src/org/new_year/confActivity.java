@@ -34,6 +34,18 @@ public class confActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		ll = new LinearLayout(this); 
 		ll.setOrientation( LinearLayout.VERTICAL );
+		Button bPolicy = new Button(this);
+		bPolicy.setText("Privacy Policy"); 
+		bPolicy.setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						Uri uri = Uri.parse("https://giuliohome.wordpress.com/2017/02/08/my-open-tweet-privacy-policy/"); 
+						Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+						startActivity(intent);		
+					}
+				} 
+				); 
+		ll.addView(bPolicy);
 		final Button oauth = new Button(this);
 		oauth.setText("authorise my app");
 		ll.addView(oauth);

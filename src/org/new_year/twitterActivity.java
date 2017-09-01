@@ -144,7 +144,7 @@ public class twitterActivity extends Activity {
 		if (sharedText != null) {
 			et.setText(sharedText);
 		}
-		if (myBundle != null) {
+		if (myBundle != null && myBundle.get("replyTo") != null) {
 			String replyTo = "@"+(String)myBundle.get("replyTo"); 
 			if (sharedText == null || !sharedText.startsWith(replyTo)) {
 				et.setText(replyTo+" ");
@@ -161,7 +161,7 @@ public class twitterActivity extends Activity {
 		replyText.setEnabled(false);
 		replyText.setHint("reply to text");
 		myBundle = this.getIntent().getExtras();
-		if (myBundle != null) {
+		if (myBundle != null && myBundle.get("replyStr") != null) {
 			replyId.setText((String)myBundle.get("replyStr"));
 			replyText.setText((String)myBundle.get("replyTweet"));
 		}
@@ -171,6 +171,9 @@ public class twitterActivity extends Activity {
 		Button bFT = new Button(this);
 		bFT.setText("favorite");
 		bFT.setOnClickListener(handlerFT); 
+		Button bQT = new Button(this);
+		bQT.setText("quote");
+		bQT.setOnClickListener(handlerQT);
 		
 		Button bT = new Button(this);
 		bT.setText("send tweet");
@@ -200,6 +203,7 @@ public class twitterActivity extends Activity {
 				ll.addView(replyText);
 				ll.addView(bRT);
 				ll.addView(bFT);
+				ll.addView(bQT);
 			} else {
 				LinearLayout mediall = new LinearLayout(this);
 				mediall.setOrientation(LinearLayout.HORIZONTAL);
@@ -474,7 +478,8 @@ public class twitterActivity extends Activity {
 						jsonObject.getJSONObject("user").getString("profile_image_url"),
 						jsonObject.getLong("id"), replyId,
 						jsonObject.getJSONObject("entities").getJSONArray("urls"),
-						jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media")
+						jsonObject.getJSONObject("entities").isNull("media")?null:jsonObject.getJSONObject("entities").getJSONArray("media"),
+						jsonObject.getInt("favorite_count"), jsonObject.getInt("retweet_count")
 						);
 			} else {
 				eResp.setText(response);
@@ -497,6 +502,7 @@ public class twitterActivity extends Activity {
 						+ ReplID + ": " 
 						+ item.message+
 						" - "+item.date.replace("+0000", "") + " - " + 
+						"fav: " + Integer.toString(item.favourites_count) + " rwt: " + Integer.toString(item.retweet_count) +  " - " +
 						source_str
 						+ "\n");
 		final Button opSw = new Button(this);
@@ -641,8 +647,18 @@ public class twitterActivity extends Activity {
 			}
 		}
 	} ;
-	
-	
+
+	private OnClickListener handlerQT = new OnClickListener() {
+		public void onClick(View v) {
+			Bundle myBundle = getIntent().getExtras();
+			if (myBundle != null && myBundle.get("replyTo") != null && myBundle.get("replyStr") != null) {
+				String addQuote =
+						
+						" twitter.com/"+(String)myBundle.get("replyTo") + "/status/" +(String)myBundle.get("replyStr"); 
+				et.setText(et.getText()+ " " + addQuote);
+			}
+		} 
+	};
 	private OnClickListener handlerRT = new OnClickListener() {
 		public void onClick(View v) {
 			eResp.setText("");

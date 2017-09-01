@@ -153,6 +153,21 @@ public class ListsMgrActivity extends Activity {
 				} 
 				);
 		llb2F.addView(bFing);
+		Button bTrends = new Button(this);
+		bTrends.setText("#trends");
+		bTrends.setOnClickListener(
+				new OnClickListener() {
+					public void onClick(View v) {
+						String trends = "";
+						ArrayList<String> res =	list2Trends();
+						for (int i = 0; i < res.size(); i++) {
+							trends += res.get(i) + "\n";
+						}
+						eResp.setText(trends);
+					}
+				} 
+				);
+		llb2F.addView(bTrends);
 		newList = new EditText(this);
 		newList.setHint(R.string.listname); 
 		LinearLayout llb3 = new LinearLayout(this);
@@ -302,8 +317,34 @@ public class ListsMgrActivity extends Activity {
 		return feed2Members(readTwitterFeed);
 	}
 
+	protected ArrayList<String> list2Trends() {
+		String readTwitterFeed = ReadTrends();
+		return feed2Trends(readTwitterFeed);
+	}
 
 
+	protected ArrayList<String> feed2Trends(String readTwitterFeed){
+		ArrayList<String> myMembers = 
+				new ArrayList<String>();
+		try {
+			JSONArray members_resp = new JSONArray(readTwitterFeed);
+			JSONObject jsonObj = members_resp.getJSONObject(0);
+			JSONArray jsonArray = jsonObj.getJSONArray("trends");
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+				if ( jsonObject != null ) { 
+					String curr_list = jsonObject.getString("name");
+					curr_list += " (" +jsonObject.getString("tweet_volume")+")";
+					myMembers.add(curr_list);
+				}
+			}
+		} catch (Exception e) {
+			Log.e("new_year_ko", "json array");
+			e.printStackTrace();
+		}
+		return myMembers;
+	}
+	
 	protected ArrayList<String> feed2Members(String readTwitterFeed){
 		ArrayList<String> myMembers = 
 				new ArrayList<String>();
@@ -440,6 +481,52 @@ public class ListsMgrActivity extends Activity {
 		
 		getUrl= "https:/"+"/api.twitter.com/1.1/friends/list.json?" +
 				"screen_name=" + user_name;
+		
+
+		String[] params = new String[5];
+		params[0] = getUrl;
+		params[1] = consumerKey;
+		params[2] = consumerSecret;
+		params[3] = userKey;
+		params[4] = userSecret;
+		
+		myTask.execute(params);
+		try {
+			return myTask.get();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return "";
+		} catch (ExecutionException e1) {
+			//TODO Auto-generated catch block
+			e1.printStackTrace();
+			return "";
+		}
+
+	}
+	
+	private String ReadTrends( )
+	{
+		OAUTHReadMembers_BackGround myTask = new OAUTHReadMembers_BackGround();
+		SharedPreferences settings = getSharedPreferences("opentweetsearch_prefs", MODE_PRIVATE);
+		String userKey = settings.getString("user_key", "");
+		String userSecret = settings.getString("user_secret", "");
+		
+
+		if	(userKey.isEmpty() || userSecret.isEmpty())
+		{
+			Toast.makeText(getBaseContext(), "no authorization", Toast.LENGTH_LONG).show();
+			//return "";
+
+		}
+
+		String consumerKey = getString(R.string.consumerKey);
+		String consumerSecret = getString(R.string.consumerSecret);
+		
+		String getUrl;
+		
+		getUrl= "https:/"+"/api.twitter.com/1.1/trends/place.json?" +
+				"id=" + "1";
 		
 
 		String[] params = new String[5];
