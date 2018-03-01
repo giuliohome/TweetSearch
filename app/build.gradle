@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "org.new_year"
+        minSdkVersion 14
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation "com.google.http-client:google-http-client-android:1.23.0"
+    implementation "com.google.http-client:google-http-client-protobuf:1.23.0"
+    implementation "com.google.http-client:google-http-client-gson:1.23.0"
+    implementation "com.google.http-client:google-http-client-jackson:1.23.0"
+    api "com.google.android.gms:play-services:11.8.0"
+    implementation "com.google.code.findbugs:jsr305:3.0.2"
+    implementation "com.google.android.gms:play-services-drive:11.8.0"
+    implementation group: 'oauth.signpost', name: 'signpost-core', version: '1.2.1.2'
+    implementation group: 'oauth.signpost', name: 'signpost-commonshttp4', version: '1.2.1.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+}
