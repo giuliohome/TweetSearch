@@ -1,4 +1,4 @@
-!https://badges.frapsoft.com/os/v1/open-source.svg?v=103(https://github.com/ellerbrock/open-source-badges/)! !https://img.shields.io/badge/License-Apache%202.0-blue.svg!
+!https://badges.frapsoft.com/os/v3/open-source.svg?v=103(https://github.com/ellerbrock/open-source-badges/)! !https://img.shields.io/badge/License-Apache%202.0-blue.svg!
 
 
 <h3 id="welcome_to_your_new_space!" style="margin-top: 20px; margin-right: 0px; margin-bottom: 6px; margin-left: 0px; font: normal normal bold 100%/18px Arial, Helvetica, 'Liberation Sans', FreeSans, sans-serif; color: #000000; font-size: 16px; padding: 0px;">Welcome to&nbsp;<span style="color: rgb(51, 51, 51); font-family: Roboto, Arial, sans-serif; font-size: 28px; font-weight: 300; line-height: 35px; background-color: rgb(229, 229, 229);">Open Tweet Search</span>!</h3>
